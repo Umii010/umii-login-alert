@@ -10,11 +10,15 @@ return new class extends Migration
     {
         Schema::create('login_alerts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('ip');
+            $table->unsignedBigInteger('user_id');
+            $table->string('ip')->nullable();
             $table->string('location')->nullable();
-            $table->string('user_agent')->nullable();
+            $table->string('device')->nullable();
+            $table->text('user_agent')->nullable();
+            $table->string('fingerprint')->nullable();
             $table->timestamps();
+
+            $table->index(['user_id', 'fingerprint']);
         });
     }
 

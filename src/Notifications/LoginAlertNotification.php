@@ -11,31 +11,30 @@ class LoginAlertNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $ip;
-    protected $location;
-    protected $userAgent;
-
-    public function __construct(string $ip, string $location, ?string $userAgent = null)
-    {
-        $this->ip = $ip;
-        $this->location = $location;
-        $this->userAgent = $userAgent;
-    }
+    public function __construct(
+        protected string $ip,
+        protected ?string $device,
+        protected ?string $userAgent,
+        protected ?string $location
+    ) {}
 
     public function via(object $notifiable): array
     {
-        return config('login-alert.notify_via', ['mail']);
+        return config('login-alert.channels', ['mail']);
     }
 
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New Login Detected')
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('We detected a new login to your account.')
-            ->line('**IP:** ' . $this->ip)
-            ->line('**Location:** ' . $this->location)
-            ->line('**Device:** ' . ($this->userAgent ?: 'Unknown'))
-            ->line('If this wasn’t you, we recommend updating your password immediately.');
+            ->subject('Login Alert')
+            ->greeting('Hello ' . ($notifiable->name ?? 'there') . ',')
+            ->line('A login to your account was detected.')
+            ->line('IP: ' . $this->ip)
+            ->line('Location: ' . ($this->location ?: 'Unknown'))
+            ->line('Device: ' . ($this->device ?: 'Unknown'))
+            ->line('User Agent: ' . ($this->userAgent ?: 'Unknown'))
+            ->line('If this was you, no action is needed. If not, please reset your password and contact support.')
+            ->line('Regards,')
+            ->line(config('app.name'));
     }
 }

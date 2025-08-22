@@ -2,20 +2,13 @@
 
 namespace Umii\LoginAlert\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Umii\LoginAlert\Notifications\LoginAlertNotification;
+use Umii\LoginAlert\Models\LoginAlert;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait TracksLoginAlerts
 {
-    public static function bootTracksLoginAlerts(): void
+    public function loginAlerts(): HasMany
     {
-        static::created(function ($user) {
-            // nothing special on creation
-        });
-    }
-
-    public function loginAlerts()
-    {
-        return $this->hasMany(\Umii\LoginAlert\Models\LoginAlert::class);
+        return $this->hasMany(LoginAlert::class, 'user_id');
     }
 }

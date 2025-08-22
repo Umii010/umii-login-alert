@@ -1,9 +1,8 @@
 <?php
 
 return [
+    'channels' => ['mail'],
+    'only_new_devices' => false,
     'include_location' => true,
-    'notify_via' => ['mail'],
-    'location_resolver' => function (string $ip) {
-        return 'Unknown';
-    },
+    'location_resolver' => Umii\LoginAlert\Resolvers\IpApiLocationResolver::class,
 ];

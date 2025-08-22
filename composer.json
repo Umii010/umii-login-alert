@@ -1,6 +1,6 @@
 {
     "name": "umii/login-alert",
-    "description": "Automatic login alert system for Laravel users",
+    "description": "Send email/SMS alerts on user login with IP, device info, and auto location (zero-config).",
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -8,15 +8,18 @@
             "Umii\\LoginAlert\\": "src/"
         }
     },
+    "require": {
+        "php": ">=8.1",
+        "guzzlehttp/guzzle": "^7.9",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/notifications": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0"
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "Umii\\LoginAlert\\LoginAlertServiceProvider"
             ]
         }
-    },
-    "require": {
-        "php": ">=8.0",
-        "illuminate/support": "^9.0|^10.0|^11.0"
     }
 }
