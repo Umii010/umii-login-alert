@@ -2,34 +2,38 @@
 
 namespace Umii\LoginAlert;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Events\Login;
-use Umii\LoginAlert\Listeners\SendLoginAlertNotification;
+use Umii\LoginAlert\Notifications\LoginAlertNotification;
 
 class LoginAlertServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/login-alert.php', 'login-alert');
+        $this->mergeConfigFrom(__DIR__.'/../config/login-alert.php', 'login-alert');
     }
 
     public function boot(): void
     {
-        // Publish config
         $this->publishes([
-            __DIR__ . '/../config/login-alert.php' => config_path('login-alert.php'),
+            __DIR__.'/../config/login-alert.php' => config_path('login-alert.php'),
         ], 'config');
 
-        // Publish migration
-        if (! class_exists('CreateLoginAlertsTable')) {
-            $timestamp = date('Y_m_d_His');
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_login_alerts_table.php' => database_path("migrations/{$timestamp}_create_login_alerts_table.php"),
-            ], 'migrations');
-        }
+        $this->publishes([
+            __DIR__.'/../database/migrations/' => database_path('migrations')
+        ], 'migrations');
 
-        // Listen to login events
-        Event::listen(Login::class, SendLoginAlertNotification::class);
+        Event::listen(Login::class, function ($event) {
+            $user = $event->user;
+            $ip = request()->ip();
+            $userAgent = request()->userAgent();
+            $resolver = config('login-alert.location_resolver');
+            $location = is_callable($resolver) ? $resolver($ip) : 'Unknown';
+
+            if (method_exists($user, 'notify')) {
+                $user->notify(new LoginAlertNotification($ip, $location, $userAgent));
+            }
+        });
     }
 }

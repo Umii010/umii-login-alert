@@ -2,27 +2,20 @@
 
 namespace Umii\LoginAlert\Traits;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Umii\LoginAlert\Models\LoginAlert as LoginAlertModel;
+use Illuminate\Support\Facades\DB;
+use Umii\LoginAlert\Notifications\LoginAlertNotification;
 
 trait TracksLoginAlerts
 {
-    public function loginAlerts(): HasMany
+    public static function bootTracksLoginAlerts(): void
     {
-        return $this->hasMany(LoginAlertModel::class, 'user_id');
+        static::created(function ($user) {
+            // nothing special on creation
+        });
     }
 
-    public function isNewLoginDevice(string $deviceHash): bool
+    public function loginAlerts()
     {
-        return ! $this->loginAlerts()->where('device_hash', $deviceHash)->exists();
-    }
-
-    public function rememberLoginDevice(string $deviceHash, string $ip, string $userAgent): void
-    {
-        $this->loginAlerts()->create([
-            'device_hash' => $deviceHash,
-            'ip_address' => $ip,
-            'user_agent' => $userAgent,
-        ]);
+        return $this->hasMany(\Umii\LoginAlert\Models\LoginAlert::class);
     }
 }

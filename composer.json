@@ -1,22 +1,8 @@
 {
     "name": "umii/login-alert",
-    "description": "Send login alerts via email/SMS when users sign in. Includes IP, device info, and optional new-device detection.",
+    "description": "Automatic login alert system for Laravel users",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Muhammad Umer Shahzad",
-            "email": "umii020@hotmail.com"
-        }
-    ],
-    "require": {
-        "php": "^8.1",
-        "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
-        "illuminate/notifications": "^9.0|^10.0|^11.0|^12.0",
-        "illuminate/events": "^9.0|^10.0|^11.0|^12.0",
-        "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
-        "illuminate/auth": "^9.0|^10.0|^11.0|^12.0"
-    },
     "autoload": {
         "psr-4": {
             "Umii\\LoginAlert\\": "src/"
@@ -29,6 +15,8 @@
             ]
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    "require": {
+        "php": ">=8.0",
+        "illuminate/support": "^9.0|^10.0|^11.0"
+    }
 }
