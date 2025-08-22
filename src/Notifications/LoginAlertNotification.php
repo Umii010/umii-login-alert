@@ -23,18 +23,22 @@ class LoginAlertNotification extends Notification implements ShouldQueue
         return config('login-alert.channels', ['mail']);
     }
 
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->subject('Login Alert')
-            ->greeting('Hello ' . ($notifiable->name ?? 'there') . ',')
-            ->line('A login to your account was detected.')
-            ->line('IP: ' . $this->ip)
-            ->line('Location: ' . ($this->location ?: 'Unknown'))
-            ->line('Device: ' . ($this->device ?: 'Unknown'))
-            ->line('User Agent: ' . ($this->userAgent ?: 'Unknown'))
-            ->line('If this was you, no action is needed. If not, please reset your password and contact support.')
-            ->line('Regards,')
-            ->line(config('app.name'));
-    }
+
+public function toMail(object $notifiable): MailMessage
+{
+    return (new MailMessage)
+        ->subject('🔐 Login Alert - ' . config('app.name'))
+        ->greeting('Hello ' . ($notifiable->name ?? 'there') . ',')
+        ->line('We noticed a new login to your account. Here are the details:')
+        ->line('')
+        ->line('**IP Address:** ' . ($this->ip ?: 'Unknown'))
+        ->line('**Location:** ' . ($this->location ?: 'Unknown'))
+        ->line('**Device:** ' . ($this->device ?: 'Unknown'))
+        ->line('**User Agent:** ' . ($this->userAgent ?: 'Unknown'))
+        ->line('')
+        ->line('If this was you, no further action is required.')
+        ->line('If this wasn’t you, please reset your password immediately and contact support.')
+        ->salutation('Regards, ' . config('app.name'));
+}
+
 }
